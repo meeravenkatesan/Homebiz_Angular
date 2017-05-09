@@ -1,20 +1,27 @@
 'use strict';
 
-angular.module('confusionApp')
+angular.module('homebizApp')
 
-.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', function ($scope, menuFactory, favoriteFactory) {
+.controller('SearchController', ['$scope', '$stateParams', 'bizlistFactory', 'favoriteFactory', function ($scope, $stateParams, bizlistFactory, favoriteFactory) {
 
     $scope.tab = 1;
-    $scope.filtText = '';
+    console.log("we got so far");
+    console.log($stateParams.searchTerm);
+    $scope.searchterm = $stateParams.searchTerm;
     $scope.showDetails = false;
     $scope.showFavorites = false;
-    $scope.showMenu = false;
+    $scope.showBizList = false;
     $scope.message = "Loading ...";
-
-    menuFactory.query(
+   
+    
+    $scope.searchmessage = "Showing search results for " + $scope.searchterm;
+    
+    
+    bizlistFactory.query(
         function (response) {
-            $scope.dishes = response;
-            $scope.showMenu = true;
+            $scope.bizes = response;
+            $scope.showBizList = true;
+            console.log($scope.bizes);
 
         },
         function (response) {
@@ -25,16 +32,15 @@ angular.module('confusionApp')
         $scope.tab = setTab;
 
         if (setTab === 2) {
-            $scope.filtText = "appetizer";
+            $scope.filtText = "service";
         } else if (setTab === 3) {
-            $scope.filtText = "mains";
-        } else if (setTab === 4) {
-            $scope.filtText = "dessert";
-        } else {
+            $scope.filtText = "product";
+        }else if (setTab === 4) {
             $scope.filtText = "";
         }
+        
     };
-
+    
     $scope.isSelected = function (checkTab) {
         return ($scope.tab === checkTab);
     };
@@ -47,13 +53,68 @@ angular.module('confusionApp')
         $scope.showFavorites = !$scope.showFavorites;
     };
     
-    $scope.addToFavorites = function(dishid) {
-        console.log('Add to favorites', dishid);
-        favoriteFactory.save({_id: dishid});
+    $scope.addToFavorites = function(bizid) {
+        //console.log('Add to favorites', bizid);
+        favoriteFactory.save({_id: bizid});
         $scope.showFavorites = !$scope.showFavorites;
     };
+    
 }])
 
+.controller('MyBizListController', ['$scope', '$state', 'mybizlistFactory', 'bizlistFactory', 'ngDialog', function ($scope, $state, mybizlistFactory, bizlistFactory,  ngDialog) {
+    $scope.filtText = '';
+    $scope.showDetails = false;
+    $scope.showBizList = false;
+    $scope.message = "Loading ...";
+    $scope.createBizflag = false;
+    //console.log("Im here");
+    mybizlistFactory.query()
+        .$promise.then(
+            function (response) {
+                $scope.bizes = response;
+                console.log($scope.bizes);
+                $scope.message='Businesses loads successfully';
+                $scope.showBizList = true;
+            },
+            function (response) {
+                $scope.message = "Error: " + response.status + " " + response.statusText;
+            }
+        );     
+    
+    
+    
+    $scope.openNewBusiness = function () {
+        ngDialog.open({ template: 'views/registerBusiness.html', scope: $scope, className: 'ngdialog-theme-default', controller:"BizCreateController" });
+    };
+    
+    $scope.toggleDetails = function () {
+        $scope.showDetails = !$scope.showDetails;
+    };
+    
+    $scope.deleteBiz = function(bizid) {
+        
+        ngDialog.openConfirm({
+                    template:
+                        '<p>Are you sure you want to delete this business ?</p>' +
+                        '<div>' +
+                          '<button type="button" class="btn btn-default" ng-click="closeThisDialog(0)">No&nbsp;' +
+                          '<button type="button" class="btn btn-orange" ng-click="confirm(1)">Yes' +
+                        '</button></div>',
+                    plain: true,
+                    className: 'ngdialog-theme-default'
+                }).then(function (value) {
+                    // perform delete operation
+                    bizlistFactory.delete({id: bizid});
+                    $state.go($state.current, {}, {reload: true});
+                }, function (value) {
+                    console.log("Did not perform delete");
+                });
+    };
+    
+}])
+
+
+                                    
 .controller('ContactController', ['$scope', 'feedbackFactory', function ($scope, feedbackFactory) {
 
     $scope.feedback = {
@@ -78,7 +139,7 @@ angular.module('confusionApp')
     $scope.sendFeedback = function () {
 
 
-        if ($scope.feedback.agree && ($scope.feedback.mychannel == "")) {
+        if ($scope.feedback.agree && ($scope.feedback.mychannel === "")) {
             $scope.invalidChannelSelection = true;
         } else {
             $scope.invalidChannelSelection = false;
@@ -96,98 +157,55 @@ angular.module('confusionApp')
     };
 }])
 
-.controller('DishDetailController', ['$scope', '$state', '$stateParams', 'menuFactory', 'commentFactory', function ($scope, $state, $stateParams, menuFactory, commentFactory) {
+.controller('BizDetailController', ['$scope', '$state', '$stateParams', 'bizlistFactory', 'reviewFactory', function ($scope, $state, $stateParams, bizlistFactory, reviewFactory) {
 
-    $scope.dish = {};
-    $scope.showDish = false;
+    $scope.biz = {};
+    $scope.showBiz = false;
     $scope.message = "Loading ...";
 
-    $scope.dish = menuFactory.get({
+    $scope.biz = bizlistFactory.get({
             id: $stateParams.id
         })
         .$promise.then(
             function (response) {
-                $scope.dish = response;
-                $scope.showDish = true;
+                $scope.biz = response;
+                $scope.showBiz = true;
             },
             function (response) {
                 $scope.message = "Error: " + response.status + " " + response.statusText;
             }
         );
 
-    $scope.mycomment = {
+    $scope.myreview = {
         rating: 5,
-        comment: ""
+        review: ""
     };
 
-    $scope.submitComment = function () {
+    $scope.submitReview = function () {
 
-        commentFactory.save({id: $stateParams.id}, $scope.mycomment);
+        reviewFactory.save({id: $stateParams.id}, $scope.myreview);
 
         $state.go($state.current, {}, {reload: true});
         
-        $scope.commentForm.$setPristine();
+        $scope.reviewForm.$setPristine();
 
-        $scope.mycomment = {
+        $scope.myreview = {
             rating: 5,
-            comment: ""
+            review: ""
         };
     }
 }])
 
-// implement the IndexController and About Controller here
-
-.controller('HomeController', ['$scope', 'menuFactory', 'corporateFactory', 'promotionFactory', function ($scope, menuFactory, corporateFactory, promotionFactory) {
+.controller('HomeController', ['$scope', 'bizlistFactory', 'corporateFactory', 'promotionFactory', function ($scope, bizlistFactory, corporateFactory, promotionFactory) {
     $scope.showDish = false;
     $scope.showLeader = false;
     $scope.showPromotion = false;
     $scope.message = "Loading ...";
-    var leaders = corporateFactory.query({
-            featured: "true"
-        })
-        .$promise.then(
-            function (response) {
-                var leaders = response;
-                $scope.leader = leaders[0];
-                $scope.showLeader = true;
-            },
-            function (response) {
-                $scope.message = "Error: " + response.status + " " + response.statusText;
-            }
-        );
-    $scope.dish = menuFactory.query({
-            featured: "true"
-        })
-        .$promise.then(
-            function (response) {
-                var dishes = response;
-                $scope.dish = dishes[0];
-                $scope.showDish = true;
-            },
-            function (response) {
-                $scope.message = "Error: " + response.status + " " + response.statusText;
-            }
-        );
-    var promotions = promotionFactory.query({
-        featured: "true"
-    })
-    .$promise.then(
-            function (response) {
-                var promotions = response;
-                $scope.promotion = promotions[0];
-                $scope.showPromotion = true;
-            },
-            function (response) {
-                $scope.message = "Error: " + response.status + " " + response.statusText;
-            }
-        );
+    $scope.searchTerm = "";
+    
+   
 }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', function ($scope, corporateFactory) {
-
-    $scope.leaders = corporateFactory.query();
-
-}])
 
 .controller('FavoriteController', ['$scope', '$state', 'favoriteFactory', function ($scope, $state, favoriteFactory) {
 
@@ -195,28 +213,27 @@ angular.module('confusionApp')
     $scope.filtText = '';
     $scope.showDetails = false;
     $scope.showDelete = false;
-    $scope.showMenu = false;
+    $scope.showBizList = false;
     $scope.message = "Loading ...";
 
     favoriteFactory.query(
         function (response) {
-            $scope.dishes = response.dishes;
-            $scope.showMenu = true;
+            $scope.bizes = response[0].bizes;
+            $scope.showBizList = true;
         },
         function (response) {
             $scope.message = "Error: " + response.status + " " + response.statusText;
         });
 
+
     $scope.select = function (setTab) {
         $scope.tab = setTab;
 
         if (setTab === 2) {
-            $scope.filtText = "appetizer";
+            $scope.filtText = "services";
         } else if (setTab === 3) {
-            $scope.filtText = "mains";
-        } else if (setTab === 4) {
-            $scope.filtText = "dessert";
-        } else {
+            $scope.filtText = "products";
+        }else if (setTab === 4) {
             $scope.filtText = "";
         }
     };
@@ -233,9 +250,9 @@ angular.module('confusionApp')
         $scope.showDelete = !$scope.showDelete;
     };
     
-    $scope.deleteFavorite = function(dishid) {
-        console.log('Delete favorites', dishid);
-        favoriteFactory.delete({id: dishid});
+    $scope.deleteFavorite = function(bizid) {
+        //console.log('Delete favorites', bizid);
+        favoriteFactory.delete({id: bizid});
         $scope.showDelete = !$scope.showDelete;
         $state.go($state.current, {}, {reload: true});
     };
@@ -297,13 +314,14 @@ angular.module('confusionApp')
     
 }])
 
+
 .controller('RegisterController', ['$scope', 'ngDialog', '$localStorage', 'AuthFactory', function ($scope, ngDialog, $localStorage, AuthFactory) {
     
     $scope.register={};
     $scope.loginData={};
     
     $scope.doRegister = function() {
-        console.log('Doing registration', $scope.registration);
+        //console.log('Doing registration', $scope.registration);
 
         AuthFactory.register($scope.registration);
         
@@ -311,4 +329,49 @@ angular.module('confusionApp')
 
     };
 }])
+
+.controller('BizCreateController', ['$scope', '$state', 'ngDialog', '$resource', 'bizlistFactory', function ($scope, $state, ngDialog, $resource, bizlistFactory) {
+    
+    $scope.biz = {};
+    $scope.showBiz = false;
+    $scope.message = "Loading ...";
+    
+    
+    $scope.newBusiness = {
+            username:"",
+            pasword:"",
+            name:"",
+            image:"",
+            category:"",
+            label:"",
+            description:"",
+            featured:"",
+            zipcode:"",
+            servingradius:""
+        };
+    
+    $scope.createBusiness = function () {
+        console.log("Image file has " + $scope.newBusiness.image);
+        $scope.newBusiness.image = "images\\logo.jpg";
+        bizlistFactory.save($scope.newBusiness)
+        .$promise.then(
+            function(response) {
+                
+                console.log('Businesses created successfully');
+                //$scope.showBizList = true;
+            },
+            function (response) {
+                console.log("Error: " + response.status + " " + response.statusText);
+            }
+        );
+      $state.go($state.current, {}, {reload: true});
+      ngDialog.close();
+    };
+    
+    $scope.openFileUpload = function() {
+        
+        ngDialog.open({ template: 'views/uploadFile.html', scope: $scope, className: 'ngdialog-theme-default' });
+    };
+}])
+
 ;

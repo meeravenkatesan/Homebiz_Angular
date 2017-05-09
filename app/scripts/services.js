@@ -1,10 +1,11 @@
 'use strict';
 
-angular.module('confusionApp')
+angular.module('homebizApp')
 .constant("baseURL", "https://localhost:3443/")
-.factory('menuFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
-        return $resource(baseURL + "dishes/:id", null, {
+.factory('bizlistFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+
+        return $resource(baseURL + "bizes/:id", null, {
             'update': {
                 method: 'PUT'
             }
@@ -12,15 +13,39 @@ angular.module('confusionApp')
 
 }])
 
-.factory('commentFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+.factory('mybizlistFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
-        return $resource(baseURL + "dishes/:id/comments/:commentId", {id:"@Id", commentId: "@CommentId"}, {
+        return $resource(baseURL + "mybizes", null, {
+            'update': {
+                method: 'PUT'
+            },
+            'query':  {
+                method:'GET', 
+                isArray:true
+            }
+        });
+
+}])
+         
+.factory('reviewFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+
+        return $resource(baseURL + "bizes/:id/reviews/:reviewId", {id:"@Id", reviewId: "@ReviewId"}, {
             'update': {
                 method: 'PUT'
             }
         });
 
 }])
+
+
+.factory('bizFactory', function($resource, baseURL) {
+    
+    return $resource(baseURL + "bizes", {}, {
+        get   : {method: "GET"},
+        update: {method : "POST"}
+    });
+})
+
 
 .factory('promotionFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
@@ -51,7 +76,10 @@ angular.module('confusionApp')
             'update': {
                 method: 'PUT'
             },
-            'query':  {method:'GET', isArray:false}
+            'query':  {
+                method:'GET', 
+                isArray:true
+            }
         });
 
 }])
@@ -65,6 +93,14 @@ angular.module('confusionApp')
             }
         });
 
+}])
+         
+.factory('userFactory' , ['$resource', 'baseURL', function($resource, baseURL){
+   
+    return $resource(baseURL + "users", {}, {
+        get   : {method: "GET"},
+        update: {method : "POST"}
+    });
 }])
 
 .factory('$localStorage', ['$window', function ($window) {
@@ -98,7 +134,7 @@ angular.module('confusionApp')
 
   function loadUserCredentials() {
     var credentials = $localStorage.getObject(TOKEN_KEY,'{}');
-    if (credentials.username != undefined) {
+    if (credentials.username !== undefined) {
       useCredentials(credentials);
     }
   }

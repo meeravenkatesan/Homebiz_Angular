@@ -2,7 +2,7 @@
 describe('Controller: MenuController', function () {
 
   // load the controller's module
-  beforeEach(module('confusionApp'));
+  beforeEach(module('homeBizApp'));
 
   var MenuController,
     scope, $httpBackend;

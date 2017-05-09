@@ -1,16 +1,16 @@
 {
-  "name": "conFusion",
+  "name": "homeBiz",
   "version": "1.0.0",
-  "description": "Website for an awesome restaurant",
+  "description": "Website for connecting local businesses together",
   "main": "index.html",
   "moduleType": [],
   "keywords": [
-    "conFusion",
+    "homeBiz",
     "Fusion",
     "Restaurant"
   ],
   "authors": [
-    "Jogesh Muppala"
+    "Meera Venkatesan"
   ],
   "license": "MIT",
   "homepage": "",

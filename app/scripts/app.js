@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('confusionApp', ['ui.router','ngResource','ngDialog'])
+angular.module('homebizApp', ['ui.router','ngResource','ngDialog'])
 .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
         
@@ -23,16 +23,6 @@ angular.module('confusionApp', ['ui.router','ngResource','ngDialog'])
 
             })
         
-            // route for the aboutus page
-            .state('app.aboutus', {
-                url:'aboutus',
-                views: {
-                    'content@': {
-                        templateUrl : 'views/aboutus.html',
-                        controller  : 'AboutController'                  
-                    }
-                }
-            })
         
             // route for the contactus page
             .state('app.contactus', {
@@ -44,30 +34,41 @@ angular.module('confusionApp', ['ui.router','ngResource','ngDialog'])
                     }
                 }
             })
-
-            // route for the menu page
-            .state('app.menu', {
-                url: 'menu',
+            
+            
+            // route for the search page
+            .state('app.search', {
+                url: 'search/:searchTerm',
                 views: {
                     'content@': {
-                        templateUrl : 'views/menu.html',
-                        controller  : 'MenuController'
+                        templateUrl : 'views/search.html',
+                        controller  : 'SearchController'
                     }
                 }
             })
-
-            // route for the dishdetail page
-            .state('app.dishdetails', {
-                url: 'menu/:id',
+            
+            .state('app.mybizlist', {
+                url: 'mybizes',
                 views: {
                     'content@': {
-                        templateUrl : 'views/dishdetail.html',
-                        controller  : 'DishDetailController'
+                        templateUrl : 'views/mybizlist.html',
+                        controller  : 'MyBizListController'
+                    }
+                }
+            })
+        
+            // route for the bizdetail page
+            .state('app.bizdetails', {
+                url: 'bizlist/:id',
+                views: {
+                    'content@': {
+                        templateUrl : 'views/bizdetail.html',
+                        controller  : 'BizDetailController'
                    }
                 }
             })
         
-            // route for the dishdetail page
+            // route for the bizdetail page
             .state('app.favorites', {
                 url: 'favorites',
                 views: {
