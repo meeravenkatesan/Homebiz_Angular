@@ -1,0 +1,49 @@
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+               <ul class="breadcrumb">
+                   <li><a href="index.html">Home</a></li>
+                   <li class="active">My Businesses</li>
+               </ul>
+            </div>
+            <div class="col-xs-12">
+               <h3>My Businesses</h3>
+               <hr>
+            </div>
+        </div>
+        <div class="row row-content">
+            <div class="col-xs-12" ng-if="!showBizList">
+                <h3>{{message}}</h3>
+            </div>
+            <div><button ng-click="toggleDetails()" class="btn btn-xs btn-orange pull-right"
+                    type="button">
+                    {{showDetails ? 'Hide Details':'Show Details'}}
+                </button></div>
+            <div class="col-xs-12" ng-if="showBizList">
+                 
+                <ul class="media-list">
+                <li class="media" ng-repeat="biz in bizes">
+                    <div class="media-left media-middle">
+                        <a ui-sref="app.bizdetails({id: biz._id})">
+                        <img class="media-object img-thumbnail"
+                        ng-src={{biz.image}} alt="image">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h2 class="media-heading">{{biz.name}}
+                        <span class="label label-danger label-xs">{{biz.label}}</span>
+                        </h2>
+                        <p ng-show="showDetails">{{biz.description}}</p>
+                        <button ng-click="deleteBiz(biz._id)" class="btn btn-xs btn-danger pull-right"
+                    type="button">
+                          <i class="fa fa-remove"></i>
+                        </button>
+                    </div>
+                </li>
+                </ul>
+
+            
+            </div>
+        </div>
+      <button ng-click="openNewBusiness()">Click here to register new business</button>
+    </div>

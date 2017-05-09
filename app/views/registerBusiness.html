@@ -1,0 +1,60 @@
+<div class="ngdialog-message" novalidate>
+    <div class="">
+            <h3>Register</h3>
+        </div>
+    <form ng-submit="createBusiness()" name="regBizForm" novalidate>
+                <div class="form-group" ng-class="{ 'has-error' : regBizForm.name.$error.required && !regBizForm.name.$pristine }">
+                    <label class="sr-only" for="name">Name</label>
+                    <input type="text" class="form-control input-sm" id="name" placeholder="Business Name" ng-model="newBusiness.name">
+                    <span ng-show="regBizForm.name.$error.required && !regBizForm.name.$pristine" class="help-block">Your Business name is required.</span>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : regBizForm.image.$error.required && !regBizForm.image.$pristine }">
+                <label class="sr-only" for="image">Path to Image</label>
+                <input type="text" value="images\logo.jpg" class="col-sm-9 form-control input-sm" id="image" placeholder="Default Image" ng-model="newBusiness.image" disabled>
+                <button type="button" class="btn btn-default btn-sm col-sm-3" ng-click="openFileUpload()">Upload Image</button>
+                </div>
+                
+                <div class="form-group" >
+                    <label class="sr-only" for="category">Category</label>
+                    <select class="form-control input-sm" id="category" ng-model="newBusiness.category">
+                        <option ng-selected="true" value="Product">Products or services?</option>
+                        <option value="Product">Product</option>
+                        <option value="Service" selected>Service</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : regBizForm.description.$error.required && !regBizForm.description.$pristine }">
+                    <label class="sr-only" for="description">Description</label>
+                    <input type="text" class="form-control input-sm" id="description" placeholder="Add a short description" ng-model="newBusiness.description">
+                    <span ng-show="regBizForm.description.$error.required && !regBizForm.description.$pristine" class="help-block">A short description is required.</span>
+                </div>
+                <div class="form-group"  ng-class="{ 'has-error has-feedback' : regBizForm.emailid.$invalid && !regBizForm.emailid.$pristine }">
+                 <label class="sr-only" for="emailid">Email</label>
+                    <input type="email" class="form-control input-sm" id="emailid" name="emailid" placeholder="Email" ng-model="newBusiness.email" required>
+                        <span ng-show="regBizForm.emailid.$invalid && !regBizForm.emailid.$pristine" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                        <span ng-show="regBizForm.emailid.$invalid && !regBizForm.emailid.$pristine" class="help-block">Enter a valid email address.</span>
+                        <span ng-show="regBizForm.emailid.$error.required && !regBizForm.emailid.$pristine" class="help-block">Enter a valid email address.</span>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : regBizForm.zipcode.$error.required && !regBizForm.zipcode.$pristine && regBizForm.zipcode.$error.number}">
+                    <label class="sr-only" for="zipcode">Zipcode</label>
+                    <input type="text" class="form-control input-sm" id="zipcode" placeholder="Zipcode" ng-model="newBusiness.zipcode" ngMin="00501" ngMax="99950">
+                    <span ng-show="regBizForm.zipcode.$error.required && !regBizForm.zipcode.$pristine" class="help-block">A zipcode is required.</span>
+                    <span ng-show="regBizForm.zipcode.$error.number" class="help-block">A number is required.</span>
+                    
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : regBizForm.servingradius.$error.required && !regBizForm.servingradius.$pristine }">
+                    <label class="sr-only" for="servingradius">Serving Radius in  miles</label>
+                    <select class="form-control input-sm" id="servingradius"  ng-model="newBusiness.servingradius" placeholder="Serving radius in miles">
+                        <option ng-selected="true" value="5">What is the radius you serve?</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>      
+                </div>
+                <button type="submit" class="btn btn-info btn-sm">Register</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click=closeThisDialog("Cancel")>Cancel</button>
+        
+      
+    </form>
+    </div>
