@@ -76,7 +76,8 @@ gulp.task('browser-sync', ['default'], function () {
       server: {
          baseDir: "dist",
          index: "index.html"
-      }
+      },
+      port: 8081
    });  
     
   // Watch any files in dist/, reload on change
