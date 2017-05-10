@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('homebizApp')
-.constant("baseURL", "https://localhost:3443/")
+//.constant("baseURL", "https://localhost:3443/")
+.constant("baseURL", "https://homebiz-meeravenkatesan.c9users.io/")
 
 .factory('bizlistFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 

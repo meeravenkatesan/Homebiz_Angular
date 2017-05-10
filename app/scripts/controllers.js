@@ -67,7 +67,7 @@ angular.module('homebizApp')
     $scope.showBizList = false;
     $scope.message = "Loading ...";
     $scope.createBizflag = false;
-    //console.log("Im here");
+    
     mybizlistFactory.query()
         .$promise.then(
             function (response) {
@@ -75,14 +75,13 @@ angular.module('homebizApp')
                 console.log($scope.bizes);
                 $scope.message='Businesses loads successfully';
                 $scope.showBizList = true;
+                $scope.showDetails = true;
             },
             function (response) {
                 $scope.message = "Error: " + response.status + " " + response.statusText;
             }
         );     
-    
-    
-    
+   
     $scope.openNewBusiness = function () {
         ngDialog.open({ template: 'views/registerBusiness.html', scope: $scope, className: 'ngdialog-theme-default', controller:"BizCreateController" });
     };
@@ -196,16 +195,6 @@ angular.module('homebizApp')
     }
 }])
 
-.controller('HomeController', ['$scope', 'bizlistFactory', 'corporateFactory', 'promotionFactory', function ($scope, bizlistFactory, corporateFactory, promotionFactory) {
-    $scope.showDish = false;
-    $scope.showLeader = false;
-    $scope.showPromotion = false;
-    $scope.message = "Loading ...";
-    $scope.searchTerm = "";
-    
-   
-}])
-
 
 .controller('FavoriteController', ['$scope', '$state', 'favoriteFactory', function ($scope, $state, favoriteFactory) {
 
@@ -226,18 +215,6 @@ angular.module('homebizApp')
         });
 
 
-    $scope.select = function (setTab) {
-        $scope.tab = setTab;
-
-        if (setTab === 2) {
-            $scope.filtText = "services";
-        } else if (setTab === 3) {
-            $scope.filtText = "products";
-        }else if (setTab === 4) {
-            $scope.filtText = "";
-        }
-    };
-
     $scope.isSelected = function (checkTab) {
         return ($scope.tab === checkTab);
     };
@@ -251,7 +228,6 @@ angular.module('homebizApp')
     };
     
     $scope.deleteFavorite = function(bizid) {
-        //console.log('Delete favorites', bizid);
         favoriteFactory.delete({id: bizid});
         $scope.showDelete = !$scope.showDelete;
         $state.go($state.current, {}, {reload: true});
