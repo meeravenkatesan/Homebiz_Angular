@@ -5,8 +5,6 @@ angular.module('homebizApp')
 .controller('SearchController', ['$scope', '$stateParams', 'bizlistFactory', 'favoriteFactory', function ($scope, $stateParams, bizlistFactory, favoriteFactory) {
 
     $scope.tab = 1;
-    console.log("we got so far");
-    console.log($stateParams.searchTerm);
     $scope.searchterm = $stateParams.searchTerm;
     $scope.showDetails = false;
     $scope.showFavorites = false;
@@ -16,7 +14,7 @@ angular.module('homebizApp')
     
     $scope.searchmessage = "Showing search results for " + $scope.searchterm;
     
-    
+    //Used to query all the businesses in the database
     bizlistFactory.query(
         function (response) {
             $scope.bizes = response;
@@ -28,33 +26,19 @@ angular.module('homebizApp')
             $scope.message = "Error: " + response.status + " " + response.statusText;
         });
 
-    $scope.select = function (setTab) {
-        $scope.tab = setTab;
-
-        if (setTab === 2) {
-            $scope.filtText = "service";
-        } else if (setTab === 3) {
-            $scope.filtText = "product";
-        }else if (setTab === 4) {
-            $scope.filtText = "";
-        }
-        
-    };
-    
-    $scope.isSelected = function (checkTab) {
-        return ($scope.tab === checkTab);
-    };
 
     $scope.toggleDetails = function () {
+        //Used to toggle the 'Showe details' button
         $scope.showDetails = !$scope.showDetails;
     };
 
     $scope.toggleFavorites = function () {
+        //Used to toggle the 'Show favorites' button
         $scope.showFavorites = !$scope.showFavorites;
     };
     
     $scope.addToFavorites = function(bizid) {
-        //console.log('Add to favorites', bizid);
+        //Add the biz id and user id to favorites
         favoriteFactory.save({_id: bizid});
         $scope.showFavorites = !$scope.showFavorites;
     };
@@ -66,8 +50,8 @@ angular.module('homebizApp')
     $scope.showDetails = false;
     $scope.showBizList = false;
     $scope.message = "Loading ...";
-    $scope.createBizflag = false;
     
+    //Used to query only those businesses started by the logged in user
     mybizlistFactory.query()
         .$promise.then(
             function (response) {
@@ -82,16 +66,19 @@ angular.module('homebizApp')
             }
         );     
    
+    //Used to open the dialog box used to open the business 
     $scope.openNewBusiness = function () {
         ngDialog.open({ template: 'views/registerBusiness.html', scope: $scope, className: 'ngdialog-theme-default', controller:"BizCreateController" });
     };
     
+    //Used to toggle the 'Showe details' buttin
     $scope.toggleDetails = function () {
         $scope.showDetails = !$scope.showDetails;
     };
     
+    
     $scope.deleteBiz = function(bizid) {
-        
+        //Opens a dialog box asking the user if he or she is sure to delete the business 
         ngDialog.openConfirm({
                     template:
                         '<p>Are you sure you want to delete this business ?</p>' +
@@ -161,7 +148,8 @@ angular.module('homebizApp')
     $scope.biz = {};
     $scope.showBiz = false;
     $scope.message = "Loading ...";
-
+    
+    //Used to query with the biz id passed throgh Stateparams 
     $scope.biz = bizlistFactory.get({
             id: $stateParams.id
         })
@@ -205,6 +193,7 @@ angular.module('homebizApp')
     $scope.showBizList = false;
     $scope.message = "Loading ...";
 
+    //Used to query all the favorites associated with the logged in user 
     favoriteFactory.query(
         function (response) {
             $scope.bizes = response[0].bizes;
@@ -214,19 +203,17 @@ angular.module('homebizApp')
             $scope.message = "Error: " + response.status + " " + response.statusText;
         });
 
-
-    $scope.isSelected = function (checkTab) {
-        return ($scope.tab === checkTab);
-    };
-
+    //Used to toggle the 'Show details' button
     $scope.toggleDetails = function () {
         $scope.showDetails = !$scope.showDetails;
     };
 
+    //Used to toggle the 'Show delete' button
     $scope.toggleDelete = function () {
         $scope.showDelete = !$scope.showDelete;
     };
     
+    //Used to delete the biz from the favorite list 
     $scope.deleteFavorite = function(bizid) {
         favoriteFactory.delete({id: bizid});
         $scope.showDelete = !$scope.showDelete;
@@ -328,6 +315,7 @@ angular.module('homebizApp')
     
     $scope.createBusiness = function () {
         console.log("Image file has " + $scope.newBusiness.image);
+        //Adding a default image to the business for now 
         $scope.newBusiness.image = "images\\logo.jpg";
         bizlistFactory.save($scope.newBusiness)
         .$promise.then(
@@ -345,7 +333,7 @@ angular.module('homebizApp')
     };
     
     $scope.openFileUpload = function() {
-        
+        //Have not added the upload functionality yet.  Will add it soon. 
         ngDialog.open({ template: 'views/uploadFile.html', scope: $scope, className: 'ngdialog-theme-default' });
     };
 }])
