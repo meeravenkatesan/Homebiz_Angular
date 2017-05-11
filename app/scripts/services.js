@@ -1,9 +1,11 @@
 'use strict';
 
 angular.module('homebizApp')
-//.constant("baseURL", "https://localhost:3443/")
-.constant("baseURL", "https://homebiz-meeravenkatesan.c9users.io/")
 
+//.constant("baseURL", "https://localhost:3443/")
+
+.constant("baseURL", "https://homebiz-meeravenkatesan.c9users.io/")
+//Service to access all the businesses in the system
 .factory('bizlistFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
         return $resource(baseURL + "bizes/:id", null, {
@@ -14,6 +16,7 @@ angular.module('homebizApp')
 
 }])
 
+//Service to access the businesses created by the registered user
 .factory('mybizlistFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
         return $resource(baseURL + "mybizes", null, {
@@ -27,7 +30,8 @@ angular.module('homebizApp')
         });
 
 }])
-         
+   
+//Service to access all the reviews associated with a business
 .factory('reviewFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
         return $resource(baseURL + "bizes/:id/reviews/:reviewId", {id:"@Id", reviewId: "@ReviewId"}, {
@@ -38,7 +42,7 @@ angular.module('homebizApp')
 
 }])
 
-
+//Service to retrieve only one business in the collection
 .factory('bizFactory', function($resource, baseURL) {
     
     return $resource(baseURL + "bizes", {}, {
@@ -48,28 +52,7 @@ angular.module('homebizApp')
 })
 
 
-.factory('promotionFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
-
-    return $resource(baseURL + "promotions/:id", null, {
-            'update': {
-                method: 'PUT'
-            }
-        });
-
-}])
-
-.factory('corporateFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
-
-
-    return $resource(baseURL + "leadership/:id", null, {
-            'update': {
-                method: 'PUT'
-            }
-        });
-
-}])
-
-
+//Service to access all the faorites associated with a user
 .factory('favoriteFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
 
@@ -85,6 +68,7 @@ angular.module('homebizApp')
 
 }])
 
+//Service used to collect the feedback sent my users
 .factory('feedbackFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
 

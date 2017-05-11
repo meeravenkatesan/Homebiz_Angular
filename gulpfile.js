@@ -76,6 +76,7 @@ gulp.task('browser-sync', ['default'], function () {
       server: {
          baseDir: "dist",
          index: "index.html"
+
       }
    });  */
     
@@ -83,6 +84,7 @@ gulp.task('browser-sync', ['default'], function () {
       server: {
          baseDir: "dist",
          index: "index.html"
+
       },
       port: 8081
    });  
